@@ -14,20 +14,26 @@ The implementation follows the best practices laid out by Anthropic for building
 
 ---
 
-## Features
-
-The server provides a single, flexible search tool:
-
-- **search**: Perform a web search using SearXNG, supporting all documented SearXNG parameters (query, categories, engines, language, page, time_range, format, results_on_new_tab, image_proxy, autocomplete, safesearch, theme, enabled_plugins, disabled_plugins, enabled_engines, disabled_engines).
-
----
-
 ## Prerequisites
 
 - Python 3.9+
 - Access to a running SearXNG instance (local or remote)
 - Docker (optional, for containerized deployment)
 - [uv](https://github.com/astral-sh/uv) (optional, for fast Python dependency management)
+
+### SearXNG Server (Required)
+
+You must have a SearXNG server running and accessible. The recommended way is via Docker:
+
+```bash
+docker run -d --name=searxng -p 32768:8080 -v "/root/searxng:/etc/searxng" \
+  -e "BASE_URL=http://0.0.0.0:32768/" \
+  -e "INSTANCE_NAME=home" \
+  --restart always searxng/searxng
+```
+
+- This will run SearXNG on port 32768 and persist configuration in `/root/searxng`.
+- The MCP server expects SearXNG to be available at `http://172.17.0.1:32768` by default (see `.env`).
 
 ---
 
@@ -44,8 +50,8 @@ pip install uv
 Clone this repository:
 
 ```bash
-git clone https://github.com/yourusername/searxng-mcp.git
-cd searxng-mcp
+git clone https://github.com/yourusername/searxng-mcp-server.git
+cd searxng-mcp-server/dev/searXNG-mcp
 ```
 
 Install dependencies:
