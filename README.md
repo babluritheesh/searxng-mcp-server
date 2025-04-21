@@ -50,7 +50,7 @@ pip install uv
 Clone this repository:
 
 ```bash
-git clone https://github.com/yourusername/searxng-mcp-server.git
+git clone https://github.com/The-AI-Workshops/searxng-mcp-server.git
 cd searxng-mcp-server/dev/searXNG-mcp
 ```
 
