@@ -82,6 +82,12 @@ docker build -t mcp/searxng-mcp .
 Create a `.env` file and configure your environment variables.
 
 ---
+Run the Docker image:
+
+```bash
+docker run -d --env-file ./.env -p 32769:32769 mcp/searxng-mcp
+```
+
 
 ## Configuration
 
