@@ -63,8 +63,8 @@ uv pip install -r requirements.txt
 Create a `.env` file based on the provided example:
 
 ```bash
-cp .env .env.local
-# Edit .env.local as needed
+nano .env
+# Edit .env as needed
 ```
 
 Configure your environment variables in the `.env` file (see Configuration section).
