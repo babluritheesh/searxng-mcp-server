@@ -188,7 +188,7 @@ Add this server to your MCP configuration for Claude Desktop, Windsurf, or any o
       "args": ["dev/searXNG-mcp/server.py"],
       "env": {
         "TRANSPORT": "stdio",
-        "SEARXNG_BASE_URL": "http://172.17.0.1:32768",
+        "SEARXNG_BASE_URL": "http://localhost:32768",
         "HOST": "0.0.0.0",
         "PORT": "32769"
       }
@@ -214,7 +214,7 @@ Add this server to your MCP configuration for Claude Desktop, Windsurf, or any o
                "mcp/searxng-mcp"],
       "env": {
         "TRANSPORT": "stdio",
-        "SEARXNG_BASE_URL": "http://172.17.0.1:32768",
+        "SEARXNG_BASE_URL": "http://localhost:32768",
         "HOST": "0.0.0.0",
         "PORT": "32769"
       }
