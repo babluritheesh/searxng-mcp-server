@@ -1,8 +1,6 @@
 # SearXNG MCP Server
 
-A template implementation of the Model Context Protocol (MCP) server integrated with [SearXNG](https://github.com/searxng/searxng) for providing AI agents with powerful, privacy-respecting search capabilities.
-
-Use this as a reference point to build your own MCP servers, or give this as an example to an AI coding assistant and tell it to follow this example for structure and code correctness!
+An MCP sse implementation of the Model Context Protocol (MCP) server integrated with [SearXNG](https://github.com/searxng/searxng) for providing AI agents with powerful, privacy-respecting search capabilities.
 
 ---
 
