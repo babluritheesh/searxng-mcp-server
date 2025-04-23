@@ -25,7 +25,7 @@ async def searxng_lifespan(server: FastMCP):
 
 mcp = FastMCP(
     "mcp-searxng",
-    description="MCP server for interacting with a SearXNG instance",
+    description="MCP server to search the web using SearXNG instance",
     lifespan=searxng_lifespan,
     host=os.getenv("HOST", "0.0.0.0"),
     port=int(os.getenv("PORT", "32769"))
