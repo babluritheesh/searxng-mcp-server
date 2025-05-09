@@ -18,6 +18,7 @@ The implementation follows the best practices laid out by Anthropic for building
 - Access to a running SearXNG instance (local or remote)
 - Docker (optional, for containerized deployment)
 - [uv](https://github.com/astral-sh/uv) (optional, for fast Python dependency management)
+- [Smithery](https://github.com/The-AI-Workshops/smithery) (optional, for MCP server management)
 
 ### SearXNG Server (Required)
 
@@ -86,6 +87,36 @@ Run the Docker image:
 docker run -d --env-file ./.env -p 32769:32769 mcp/searxng-mcp
 ```
 
+---
+
+### Using Smithery
+
+[Smithery](https://github.com/The-AI-Workshops/smithery) is a command-line tool for managing AI agent tools and MCP servers.
+
+Install Smithery if you don't have it (see Smithery documentation for various installation methods, e.g., using pipx):
+```bash
+pipx install smithery
+```
+
+Install the SearXNG MCP server using Smithery:
+```bash
+smithery install @The-AI-Workshops/searxng-mcp-server
+```
+This will install the server and its dependencies into a dedicated environment managed by Smithery.
+
+After installation, Smithery will provide you with the path to the installed server. You will need to navigate to this directory to configure it. For example, if Smithery installs tools into `~/.smithery/tools/`, the path might be `~/.smithery/tools/The-AI-Workshops/searxng-mcp-server`.
+
+Create a `.env` file in the server's directory by copying the example:
+```bash
+# Example:
+# cd ~/.smithery/tools/The-AI-Workshops/searxng-mcp-server
+cp .env.example .env
+nano .env
+# Edit .env as needed
+```
+Configure your environment variables in the `.env` file (see Configuration section).
+
+---
 
 ## Configuration
 
@@ -133,6 +164,29 @@ docker run --rm -it -p 32769:32769 --env-file dev/searXNG-mcp/.env -v $(pwd)/dev
 **Stdio Transport**
 
 With stdio, the MCP client itself can spin up the MCP server container, so nothing to run at this point.
+
+---
+
+### Running with Smithery
+
+**SSE Transport**
+
+Set `TRANSPORT=sse` in `.env` in the Smithery-installed server directory.
+Then, you can typically run the server using the Python interpreter from the virtual environment Smithery created for the tool:
+```bash
+# Navigate to the server directory, e.g.,
+# cd ~/.smithery/tools/The-AI-Workshops/searxng-mcp-server
+~/.smithery/venvs/The-AI-Workshops_searxng-mcp-server/bin/python server.py
+```
+Alternatively, if Smithery provides a direct run command for installed tools (check Smithery documentation):
+```bash
+smithery run @The-AI-Workshops/searxng-mcp-server
+```
+The server will be available based on your HOST and PORT settings in `.env` (e.g., `http://localhost:32769/sse`).
+
+**Stdio Transport**
+
+With stdio, the MCP client itself will spin up the server. The client configuration will need to point to the `server.py` script within the Smithery-managed directory, potentially using `smithery exec` or the direct path to the Python interpreter in the tool's virtual environment. See the "Integration with MCP Clients" section for examples.
 
 ---
 
@@ -220,6 +274,51 @@ Add this server to your MCP configuration for Claude Desktop, Windsurf, or any o
   }
 }
 ```
+
+---
+
+### Smithery with Stdio Configuration
+
+If you installed the server using Smithery, you can configure your MCP client to run it via stdio. Smithery provides an `exec` command to run executables from within the tool's environment.
+
+```json
+{
+  "mcpServers": {
+    "searxng": {
+      "command": "smithery",
+      "args": ["exec", "@The-AI-Workshops/searxng-mcp-server", "--", "python", "server.py"],
+      // "cwd" (current working directory) might be automatically handled by Smithery.
+      // If server.py is in a subdirectory, adjust the python script path e.g., "python", "path/to/server.py"
+      "env": {
+        "TRANSPORT": "stdio",
+        "SEARXNG_BASE_URL": "http://localhost:32768", // Adjust as needed
+        "HOST": "0.0.0.0", // Typically not used by stdio server itself but good to set
+        "PORT": "32769"  // Typically not used by stdio server itself
+      }
+    }
+  }
+}
+```
+Alternatively, you can find the path to the Python interpreter in the virtual environment created by Smithery (e.g., `~/.smithery/venvs/The-AI-Workshops_searxng-mcp-server/bin/python`) and the path to `server.py` (e.g., `~/.smithery/tools/The-AI-Workshops/searxng-mcp-server/server.py`) and use those directly:
+```json
+{
+  "mcpServers": {
+    "searxng": {
+      "command": "~/.smithery/venvs/The-AI-Workshops_searxng-mcp-server/bin/python",
+      "args": ["~/.smithery/tools/The-AI-Workshops/searxng-mcp-server/server.py"],
+      // "cwd" should be the directory containing server.py if not using absolute paths for args,
+      // or if server.py relies on relative paths for other files (like .env).
+      // Example: "cwd": "~/.smithery/tools/The-AI-Workshops/searxng-mcp-server",
+      "env": {
+        "TRANSPORT": "stdio",
+        "SEARXNG_BASE_URL": "http://localhost:32768"
+        // Other necessary env vars from .env can be duplicated here
+      }
+    }
+  }
+}
+```
+Ensure the paths are correct for your Smithery installation and that the `.env` file is discoverable by `server.py` (usually by setting `cwd` to the server's root directory or ensuring `server.py` loads it from an absolute path if Smithery sets one).
 
 ---
 
