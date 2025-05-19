@@ -1,0 +1,12 @@
+toml
+name = "searxng-mcp-server"
+main = "server.py"
+compatibility_date = "2024-05-18"
+
+[vars]
+
+[site]
+# assets.directory = "./dist"
+
+[build]
+command = "npm run install-deps"
