@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Expose the default port (can be overridden)
-EXPOSE 32769
+EXPOSE 8000
 
 # Entrypoint for SSE (default)
 CMD ["python", "server.py"]
